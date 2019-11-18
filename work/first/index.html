@@ -69,7 +69,8 @@
 </div>
 <script src="../../common/js/jquery.js"></script>
 <script>
-  $(function() {
+  //   $(function() { 調べる
+  $(function() { 
     // 第1問  id='q1'の要素の文字色を赤色にせよ。
     $('#q1').css('color','red');
     // 第2問  id='q2'の要素をクリックしたら背景色をピンクにせよ。
@@ -84,10 +85,7 @@
     }
     // 第4問  id='q4'の要素をクリックしたらこの要素の前後とこの要素内の前後にテキストを挿入せよ。
     $('#q4').click(function() {
-      $(this).prepend('DOM要素内の先頭')
-            .append('要素内の末尾')
-            .before('要素の前')
-            .after('要素の後');
+      $(this).prepend('DOM要素内の先頭').append('要素内の末尾').before('要素の前').after('要素の後');
     });
     // 第5問  id='q5'の要素をクリックしたらこの要素にlargeというクラスを付与せよ。
     $('#q5').click(function() {
