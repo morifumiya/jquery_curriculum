@@ -1,166 +1,211 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="format-detection" content="telephone=no">
-    <title>jQuery</title>
-    <link rel="stylesheet" href="../../common/css/reset.css">
-    <link rel="stylesheet" href="../../common/css/base.css">
-    <link rel="stylesheet" href="./css/style.css">
-  </head>
-  <body>
-    <div class="wrap">
-      <div class="container">
-        <div class="header">
-          <p class="header__title">Search Books!</p>
-        </div>
-        <div class="search">
-          <div class="search__text">
-            <input type="text" id="js-search-word" class="search__text__input" placeholder="検索する">
-          </div>
-          <button id="js-search-button" class="search__btn">検索する</button>
-        </div>
-        <ul class="lists"></ul>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="format-detection" content="telephone=no">
+  <title>jQuery</title>
+  <link rel="stylesheet" href="../../common/css/reset.css">
+  <link rel="stylesheet" href="../../common/css/base.css">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="container">
+      <div class="header">
+        <p class="header__title">Search Books!</p>
       </div>
+      <div class="search">
+        <div class="search__text">
+          <input type="text" id="js-search-word" class="search__text__input" placeholder="検索する">
+        </div>
+        <button id="js-search-button" class="search__btn">検索する</button>
+      </div>
+      <ul class="lists"></ul>
     </div>
-    <script src="../../common/js/jquery.js"></script>
-    <script>
-      // 楽天ブックスの総合検索APIを使って製作してください。
-      // answerの挙動を良く見てね！
-      //
-      // 下記URLにAPIの仕様が載ってるいので、ブラウザで開いて参考にしてください。
-      // https://webservice.rakuten.co.jp/api/bookstotalsearch/
-      //
-      //
-      // [使うメソッド]
-      // $.each(配列, function functionName() {}) 配列に対しての繰り返し処理
-      // $.ajax({}) 外部ファイルやURLに対してデータをリクエストすることができます。
-      // 以下は今回使う$.ajaxの基本的な形です。
-      //
-      // $.ajax({
-      //   url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
-      //   type: 'GET',
-      //   datatype: 'json',
-      //   data: {
-      //     // 「区分:サービス固有パラメーター」を確認して、必要な情報をdata内に入れましょう。
-      //     applicationId: '1019399324990976605', // (今回はこのIDを使用してください)
-      //     booksGenreId: '001'
-      //   },
-      // }).done(function(data) {
-      //   // この中にデータ取得後の動きを記述していきます。
-      //   console.log(data);
-      // });
-      //
-      //
-      // $.ajaxによってデータが取得できたら、必要なデータ(作品名とか作者名とか)を取得します。
-      // 取得できたらHTMLに<ul class='lists'></ul>を用意しているので、その中に下のテンプレに沿ってデータを入れ込みましょう。
-      // <li class='lists__item'>
-      //  <div class='lists__item__inner'>
-      //    <a href='' class='lists__item__link' target='_blank'>
-      //      <img src='' class='lists__item__img' alt=''>
-      //      <p class='lists__item__detail'>作品名：</p>
-      //      <p class='lists__item__detail'>作者　：</p>
-      //      <p class='lists__item__detail'>出版社：</p>
-      //    </a>
-      //  </div>
-      // </li>
-      //
-      //
-      //
-      $(function() {
-        var prev = '';
-        var pageNum = 0;
-        $('.search__btn').on('click', function() {
-          pageChange();// 関数呼び出し
-        });
-        /////////////////////////////関数定義////////////////////
-        //キーワードの比較
-        function pageChange() {
-          var keyword = $('#js-search-word').val();
-          if(prev !== keyword) {// 検索キーワード違うなら
-            $('.lists').empty();// listを空に。
-            prev = keyword;// prevに現在のキーワードを保存。
-            pageNum = 0;// pageNumを０に。
+  </div>
+  <script src="../../common/js/jquery.js"></script>
+  <script>
+    // 楽天ブックスの総合検索APIを使って製作してください。
+    // answerの挙動を良く見てね！
+    //
+    // 下記URLにAPIの仕様が載ってるいので、ブラウザで開いて参考にしてください。
+    // https://webservice.rakuten.co.jp/api/bookstotalsearch/
+    //
+    //
+    // [使うメソッド]
+    // $.each(配列, function functionName() {}) 配列に対しての繰り返し処理
+    // $.ajax({}) 外部ファイルやURLに対してデータをリクエストすることができます。
+    // 以下は今回使う$.ajaxの基本的な形です。
+    //
+    // $.ajax({
+    //   url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
+    //   type: 'GET',
+    //   datatype: 'json',
+    //   data: {
+    //     // 「区分:サービス固有パラメーター」を確認して、必要な情報をdata内に入れましょう。
+    //     applicationId: '1019399324990976605', // (今回はこのIDを使用してください)
+    //     booksGenreId: '001'
+    //   },
+    // }).done(function(data) {
+    //   // この中にデータ取得後の動きを記述していきます。
+    //   console.log(data);
+    // });
+    //
+    //
+    // $.ajaxによってデータが取得できたら、必要なデータ(作品名とか作者名とか)を取得します。
+    // 取得できたらHTMLに<ul class='lists'></ul>を用意しているので、その中に下のテンプレに沿ってデータを入れ込みましょう。
+    // <li class='lists__item'>
+    //  <div class='lists__item__inner'>
+    //    <a href='' class='lists__item__link' target='_blank'>
+    //      <img src='' class='lists__item__img' alt=''>
+    //      <p class='lists__item__detail'>作品名：</p>
+    //      <p class='lists__item__detail'>作者　：</p>
+    //      <p class='lists__item__detail'>出版社：</p>
+    //    </a>
+    //  </div>
+    // </li>
+    //
+    //
+    //
+    $(function () {
+      var prev = '';
+      var pageNum = 1;
+      $('.search__btn').on('click', function () {
+        pageChange();// 関数呼び出し
+      });
+      /////////////////////////////関数定義////////////////////
+      //キーワードの比較
+      function pageChange() {
+        var keyword = $('#js-search-word').val();
+        if (prev !== keyword) {// 検索キーワード違うなら
+          $('.lists').empty();// listを空に。
+          prev = keyword;// prevに現在のキーワードを保存。
+          pageNum = 1;// pageNumを０に。
+        } else {
+          pageNum++;
+        }
+        /////////////////////////////（ajax通信ゾーン＆呼び出し）////////////////////////////////
+        $.ajax({
+          url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',// Ajaxリクエストを送信するURLを指定します。
+          type: 'GET',// GETメソッドはPOSTメソッドと比べて渡せる情報量が少ない。GETメソッドは渡した値が履歴に残る。
+          datatype: 'json',// 軽量のデータ交換フォーマット。
+          data: {
+            // 「区分:サービス固有パラメーター」を確認して、必要な情報をdata内に入れましょう。
+            applicationId: '1019399324990976605', // (今回はこのIDを使用してください)
+            booksGenreId: '001',
+            page: pageNum,
+            hits: 20,
+            keyword: keyword
           }
-          pageNum += 1// 検索キーワードが同じならページの追加
-          console.log('keyword => ', keyword);
-          console.log('pageNum => ', pageNum);
-          $.ajax({
-            url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
-            type: 'GET',
-            datatype: 'json',
-            data: {
-              // 「区分:サービス固有パラメーター」を確認して、必要な情報をdata内に入れましょう。
-              applicationId: '1019399324990976605', // (今回はこのIDを使用してください)
-              booksGenreId: '001',
-              page: pageNum,
-              hits: 20,
-              keyword: keyword
-            }
+        })
+          .done(function (data) {//jax通信が成功すると。引数dataをallowに
+            allow(data);
           })
-          .done(function(data) {//doneとfailの中の処理を関数化
-            $('.comment').remove();// コメント（エラー）削除
-            $('.error-message').remove();// APIリクエスト過多 削除
-            console.log('data.hits => ', data.hits);
-            if(data.count > 0) {
-              var list = '';
-              $.each(data.Items,function(i,item) {
-                list += '<li class = "lists__item">' +// list = list + ~~~
-                  '<div class="lists__item__inner">' +
-                    '<a href="' + item.Item.itemUrl + '"class="lists__item__link" target="_blank">' +
-                      '<img src="' + item.Item.largeImageUrl + '" class="lists__item__img" alt="' + item.Item.title + '">' +
-                      '<p class="lists__item__detail">作品名： ' + item.Item.title + '</p>' +
-                      '<p class="lists__item__detail">作者　： ' + item.Item.author + '</p>' +
-                      '<p class="lists__item__detail">出版社： ' + item.Item.publisherName + '</p>' +
-                      '</a>' +
-                      '</div>' +
-                      '</li>';
-              })
-              $('.lists').prepend(list);// listの後ろに入れる
-              console.log(data.Items);
-            } else {
-              // if ($('.comment').index() === -1) {
-                
-                $('li .message').remove();
-                $('.lists').before('<div class = "comment"></div>')
-                comment = $('.comment');
-                comment.html('<p class = "message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</p>');
-            }
-            }).fail(function(error) {//引数errorに変えた。
-              console.log("XMLHttpRequest : ", error);
-              console.log("textStatus : ", error);
-              console.log("errorThrown : ", error);
-              var errText = '';
-              switch(error.status) {// HTTPステータスコードが
-                case 400:// 400だったら
-                  errText = 'キーワードが有効ではありません。'// 変数errTextに文字列代入
-                  break;
-                case 404:
-                  errText = '対象のデータが存在しません'
-                  break;
-                case 429:
-                  errText = 'APIリクエスト数が上限に達した場合のエラーです。<br>しばらく時間を空けてから、ご利用ください。'
-                  break;
-                case 500:
-                  errText = 'システムエラー。<br>長時間続くようであれば、こちらよりごお問い合わせください。'
-                  break;
-                case 503:
-                  errText = 'メンテナンス中です。'
-                  break;
-                default:
-                  errText = 'ネットワークエラーです。';
-              }
-              $('ul').empty();// ulって変数名分かりづらい
-              $('p.message').empty();
-              pageNum = 0;// エラーの時のpageNumを０に。
-              $('.lists').append('<li class="message"><p class="error-message">' + errText + '</p></li>');
-              // $("ul").empty();
-              // $('.lists').before('<div class = "comment"></div>')
-              // dataComment = $('.comment');
-              // dataComment.html('<p class = "failMessage">検索キーワードの指定がありません。<br>検索キーワード全体は半角で128文字以内で指定する必要があります。</p>');
-            })
-          }
+          .fail(function (error) {//ajax通信が失敗すると。引数errorをdisallowに
+            disallow(error);
+          })
+        ///////////////////////////////////////////////////////////////////////
+
+        // pageNum += 1// 検索キーワードが同じならページの追加
+        console.log('keyword => ', keyword);//コンソールしているだけ
+        console.log('pageNum => ', pageNum);
+      }
+
+      // 通信成功時(done)の関数定義
+      function allow(data) {
+        $('.comment').remove();// コメント（前ののエラー）削除
+        $('.error-message').remove();// 前のAPIリクエスト過多 削除
+        console.log('data.hits => ', data.hits);
+
+        if (data.count > 0) {
+          var list = '';
+          $.each(data.Items, function (i, item) {
+            list += '<li class = "lists__item">' +// list = list + ~~~
+              '<div class="lists__item__inner">' +
+              '<a href="' + item.Item.itemUrl + '"class="lists__item__link" target="_blank">' +
+              '<img src="' + item.Item.largeImageUrl + '" class="lists__item__img" alt="' + item.Item.title + '">' +
+              '<p class="lists__item__detail">作品名： ' + item.Item.title + '</p>' +
+              '<p class="lists__item__detail">作者　： ' + item.Item.author + '</p>' +
+              '<p class="lists__item__detail">出版社： ' + item.Item.publisherName + '</p>' +
+              '</a>' +
+              '</div>' +
+              '</li>';
+          })
+          $('.lists').prepend(list);// listの後ろに入れる
+          console.log(data.Items);
+        } else {
+          // if ($('.comment').index() === -1) {
+          $('.lists').before('<div class = "comment"></div>')
+          comment = $('.comment');
+          comment.html('<p class = "message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</p>');
+        }
+      }
+      // 通信失敗時(file)の関数定義
+      function disallow(error) {
+        console.log("XMLHttpRequest : ", error);
+        console.log("textStatus : ", error);
+        console.log("errorThrown : ", error);
+        var errText = '';
+        switch (error.status) {// HTTPステータスコードが
+          case 400:// 400だったら
+            errText = 'キーワードが有効ではありません。'// 変数errTextに文字列代入
+            break;
+          case 404:
+            errText = '対象のデータが存在しません'
+            break;
+          case 429:
+            errText = 'APIリクエスト数が上限に達した場合のエラーです。<br>しばらく時間を空けてから、ご利用ください。'
+            break;
+          case 500:
+            errText = 'システムエラー。<br>長時間続くようであれば、こちらよりごお問い合わせください。'
+            break;
+          case 503:
+            errText = 'メンテナンス中です。'
+            break;
+          default:
+            errText = 'ネットワークエラーです。';
+
+        }
+        pageNum = 0;// エラーの時のpageNumを０に。
+        $('.lists').empty();// ulって変数名＝('ドキュメント')分かりづらい
+        $('p.message').empty();//上のelseのメッセージ削除
+        $('.lists').append('<li class="message"><p class="error-message">' + errText + '</p></li>');
+      }
+    });
+      // $('.comment').remove();// コメント（エラー）削除
+      // $('.error-message').remove();// APIリクエスト過多 削除
+      // console.log('data.hits => ', data.hits);
+      // if(data.count > 0) {
+      //   var list = '';
+      //   $.each(data.Items,function(i,item) {
+      //     list += '<li class = "lists__item">' +// list = list + ~~~
+      //       '<div class="lists__item__inner">' +
+      //         '<a href="' + item.Item.itemUrl + '"class="lists__item__link" target="_blank">' +
+      //           '<img src="' + item.Item.largeImageUrl + '" class="lists__item__img" alt="' + item.Item.title + '">' +
+      //           '<p class="lists__item__detail">作品名： ' + item.Item.title + '</p>' +
+      //           '<p class="lists__item__detail">作者　： ' + item.Item.author + '</p>' +
+      //           '<p class="lists__item__detail">出版社： ' + item.Item.publisherName + '</p>' +
+      //           '</a>' +
+      //           '</div>' +
+      //           '</li>';
+      //   })
+      //   $('.lists').prepend(list);// listの後ろに入れる
+      //   console.log(data.Items);
+      // } else {
+      //   // if ($('.comment').index() === -1) {
+      //     $('li .message').remove();
+      //     $('.lists').before('<div class = "comment"></div>')
+      //     comment = $('.comment');
+      //     comment.html('<p class = "message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</p>');
+      // }
+
+        // $("ul").empty();
+        // $('.lists').before('<div class = "comment"></div>')
+        // dataComment = $('.comment');
+        // dataComment.html('<p class = "failMessage">検索キーワードの指定がありません。<br>検索キーワード全体は半角で128文字以内で指定する必要があります。</p>');
         // function pageAdd() {
         //   var searchword = $('.search__text__input').val();
         //   if(prev === searchword) {
@@ -168,8 +213,7 @@
         //   pageNum = pageNum + 1// ページの追加
         // }
         //////////////////////////////////////////////
-      });
-      //   console.log(data);
+        //   console.log(data);
       // });
 
       // $.ajaxによってデータが取得できたら、必要なデータ(作品名とか作者名とか)を取得します。
@@ -183,6 +227,7 @@
     //     </a>
     //   </div>
     // </li>
-    </script>
-  </body>
+  </script>
+</body>
+
 </html>
